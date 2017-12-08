@@ -1,0 +1,95 @@
+buildscript {
+    ext.kotlin_version = '1.2.0'
+    ext.jackson_version = '2.9.2'
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'idea'
+    id "org.jetbrains.kotlin.jvm" version "1.2.0"
+    id 'jacoco'
+}
+apply plugin: 'javafx-gradle-plugin'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/kotlin/kotlinx' }
+    maven { url 'https://jitpack.io' }
+}
+
+version = "0.1.0"
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.17'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+
+    compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    compile "com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+
+    compile 'io.github.microutils:kotlin-logging:1.4.4'
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile 'no.tornado:tornadofx:1.7.12'
+    compile 'com.github.wakingrufus:lib-elo:0.2.2'
+
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testCompile 'org.mockito:mockito-core:2.8.9'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile "org.testfx:testfx-core:4.0.7-alpha"
+    testCompile "org.testfx:testfx-junit:4.0.6-alpha"
+    testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
+}
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClassName = 'com.github.wakingrufus.eloleague.MainKt'
+    mainClass = 'com.github.wakingrufus.eloleague.MainKt'
+    appName = "elo-league-jfx"
+    // minimal requirement for jfxNative-task
+    vendor = 'wakingrufus'
+    bundler = "deb"
+    nativeReleaseVersion = project.version
+    verbose = true
+}
+
+idea {
+    project {
+        languageLevel = '1.8'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+jacocoTestReport.dependsOn test
+build.dependsOn jfxNative
+build.dependsOn jacocoTestReport
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
