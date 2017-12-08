@@ -16,3 +16,8 @@ Download elo-league-jfx [here](https://github.com/wakingrufus/elo-league-jfx/wik
 - add games to league
 - view current ratings for league
 - rating history detail view
+
+## Development
+
+After cloning the repo, use `gradle jfxRun` to run the app
+Use `gradle test` to run tests
