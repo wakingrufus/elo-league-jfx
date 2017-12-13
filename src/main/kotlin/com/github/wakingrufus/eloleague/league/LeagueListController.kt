@@ -1,4 +1,4 @@
-package com.github.wakingrufus.eloleague.ui
+package com.github.wakingrufus.eloleague.league
 
 import com.github.wakingrufus.elo.League
 import com.github.wakingrufus.eloleague.data.ConfigData

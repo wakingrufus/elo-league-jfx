@@ -1,4 +1,4 @@
-package com.github.wakingrufus.eloleague.ui
+package com.github.wakingrufus.eloleague.league
 
 import mu.KLogging
 import tornadofx.*
