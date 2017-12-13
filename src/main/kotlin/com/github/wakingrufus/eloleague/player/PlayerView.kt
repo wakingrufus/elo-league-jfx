@@ -14,11 +14,18 @@ class PlayerView : View("Player View") {
             fieldset("Edit Player") {
                 field("Name") {
                     textfield(playerModel.name)
-
+                }
+                hbox {
                     button("Save") {
                         enableWhen(playerModel.dirty.and(playerModel.valid))
                         action {
                             playerModel.commit()
+                            playerModel.item = null
+                        }
+                    }
+                    button("Cancel") {
+                        action {
+                            playerModel.rollback()
                             playerModel.item = null
                         }
                     }

@@ -17,6 +17,9 @@ class LeagueView : View("League View") {
 
 
     override val root = vbox {
+        visibleWhen {
+            model.empty.not()
+        }
         form {
             fieldset("Edit League") {
                 field("Name") {
@@ -52,10 +55,30 @@ class LeagueView : View("League View") {
                         if (isValidInt(it)) null else error("must be numeric")
                     }
                 }
+                hbox {
+                    button("Save") {
+                        enableWhen(model.dirty.and(model.valid))
+                        action {
+                            model.commit()
+                            model.item = null
+                        }
+                    }
+                    button("Cancel") {
+                        action {
+                            model.rollback()
+                            model.item = null
+                        }
+                    }
+                }
                 tableview(model.players) {
                     column("Name", PlayerItem::nameProperty)
                     bindSelected(playerModel)
                     columnResizePolicy = SmartResize.POLICY
+                }
+                button("Add Player").setOnAction {
+                    val newPlayer = PlayerItem(id = UUID.randomUUID().toString())
+                    playerModel.rebind { newPlayer }
+                    model.players.value.add(newPlayer)
                 }
                 tableview(model.games) {
                     column("Time", GameItem::timestamp)
@@ -72,21 +95,10 @@ class LeagueView : View("League View") {
                     bindSelected(gameModel)
                     columnResizePolicy = SmartResize.POLICY
                 }
-                button("Add Player").setOnAction {
-                    val newPlayer = PlayerItem(id = UUID.randomUUID().toString())
-                    playerModel.rebind { newPlayer }
-                    model.players.value.add(newPlayer)
-                }
                 button("Add Game").setOnAction {
                     val newGame = GameItem(id = UUID.randomUUID().toString())
                     gameModel.rebind { newGame }
                     model.games.value.add(newGame)
-                }
-                button("Save") {
-                    enableWhen(model.dirty.and(model.valid))
-                    action {
-                        model.commit()
-                    }
                 }
             }
         }

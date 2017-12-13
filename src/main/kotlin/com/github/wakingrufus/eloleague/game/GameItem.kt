@@ -13,7 +13,6 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-
 class GameItem(id: String,
                timestamp: LocalDateTime = LocalDateTime.now(),
                team1Players: List<PlayerItem> = FXCollections.observableArrayList(),

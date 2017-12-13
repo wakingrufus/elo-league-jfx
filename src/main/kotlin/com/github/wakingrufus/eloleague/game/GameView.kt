@@ -2,7 +2,10 @@ package com.github.wakingrufus.eloleague.game
 
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.league.LeagueModel
+import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.ui.datetimepicker
+import javafx.collections.ObservableList
+import javafx.scene.control.ListView
 import javafx.scene.control.SelectionMode
 import tornadofx.*
 
@@ -12,8 +15,11 @@ class GameView : View("Player View") {
     val gameModel: GameModel by inject()
     val leagueModel: LeagueModel by inject()
 
+    var team1List: ListView<PlayerItem>? = null
+
+
     override val root = vbox {
-        visibleWhen{
+        visibleWhen {
             gameModel.empty.not()
         }
         form {
@@ -25,12 +31,13 @@ class GameView : View("Player View") {
                     hbox {
                         vbox {
                             field("Team 1") {
-                                listview(leagueModel.players) {
-                                    gameModel.team1Players.value.forEach({ playerId ->
-                                        selectionModel.select(leagueModel.players.value.first { it.id == playerId.id })
-                                    })
-                                    gameModel.team1Players.value = (selectionModel.selectedItems)
+                                team1List = listview(leagueModel.players) {
                                     selectionModel.selectionMode = SelectionMode.MULTIPLE
+                                    gameModel.team1Players.value.forEach { selectionModel.select(it) }
+                                    selectionModel.selectedItems.onChange {
+                                        gameModel.team1Players.setValue(it.list as ObservableList<PlayerItem>)
+                                    }
+
                                     cellCache {
                                         label(it.nameProperty)
                                     }
@@ -45,11 +52,11 @@ class GameView : View("Player View") {
                         vbox {
                             field("Team 2") {
                                 listview(leagueModel.players) {
-                                    gameModel.team2Players.value.forEach({ playerId ->
-                                        selectionModel.select(leagueModel.players.value.first { it.id == playerId.id })
-                                    })
-                                    gameModel.team2Players.value = (selectionModel.selectedItems)
                                     selectionModel.selectionMode = SelectionMode.MULTIPLE
+                                    gameModel.team2Players.value.forEach { selectionModel.select(it) }
+                                    selectionModel.selectedItems.onChange {
+                                        gameModel.team2Players.setValue(it.list as ObservableList<PlayerItem>)
+                                    }
                                     cellCache {
                                         label(it.nameProperty)
                                     }
@@ -62,11 +69,19 @@ class GameView : View("Player View") {
                             }
                         }
                     }
-                    button("Save") {
-                        enableWhen(gameModel.dirty.and(gameModel.valid))
-                        action {
-                            gameModel.commit()
-                            gameModel.item = null
+                    hbox {
+                        button("Save") {
+                            enableWhen(gameModel.dirty.and(gameModel.valid))
+                            action {
+                                gameModel.commit()
+                                gameModel.item = null
+                            }
+                        }
+                        button("Cancel") {
+                            action {
+                                gameModel.rollback()
+                                gameModel.item = null
+                            }
                         }
                     }
                 }

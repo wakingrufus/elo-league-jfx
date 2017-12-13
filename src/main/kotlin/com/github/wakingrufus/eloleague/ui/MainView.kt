@@ -19,6 +19,7 @@ class MainView : View("ELO League") {
             this += LeagueView::class
         }
         right {
+            maxWidth = 240.px.value
             vbox {
                 this += PlayerView::class
                 this += GameView::class
