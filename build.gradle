@@ -40,6 +40,7 @@ dependencies {
     compile 'io.github.microutils:kotlin-logging:1.4.4'
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'no.tornado:tornadofx:1.7.12'
+    compile 'no.tornado:tornadofx-controls:1.0.6'
     compile 'com.github.wakingrufus:lib-elo:0.2.2'
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
