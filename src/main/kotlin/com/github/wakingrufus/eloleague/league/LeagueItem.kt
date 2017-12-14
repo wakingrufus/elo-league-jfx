@@ -81,5 +81,13 @@ fun fromData(leagueData: LeagueData): LeagueItem {
     item.teamSizeProperty.set(leagueData.teamSize)
     item.playersProperty.setAll(leagueData.players.map { com.github.wakingrufus.eloleague.player.fromData(it) })
     item.gamesProperty.setAll(leagueData.games.map { com.github.wakingrufus.eloleague.game.fromData(it) })
+    item.games.forEach({game ->
+        game.team1Players.forEach({ player ->
+            player.name = item.players.first { it.id == player.id }?.name
+        })
+        game.team2Players.forEach({ player ->
+            player.name = item.players.first { it.id == player.id }?.name
+        })
+    })
     return item
 }
