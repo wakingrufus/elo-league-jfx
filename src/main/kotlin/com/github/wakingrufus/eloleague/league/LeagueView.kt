@@ -1,15 +1,23 @@
 package com.github.wakingrufus.eloleague.league
 
+import com.github.wakingrufus.elo.calculateNewLeague
 import com.github.wakingrufus.eloleague.game.GameItem
 import com.github.wakingrufus.eloleague.game.GameModel
+import com.github.wakingrufus.eloleague.game.toGameData
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerModel
+import com.github.wakingrufus.eloleague.results.ResultsView
+import com.github.wakingrufus.eloleague.results.games
+import com.github.wakingrufus.eloleague.results.league
 import javafx.beans.property.ReadOnlyStringWrapper
+import javafx.stage.StageStyle
+import mu.KLogging
 import tornadofx.*
 import java.util.*
 
 class LeagueView : View("League View") {
+    companion object : KLogging()
 
     val model: LeagueModel by inject()
     val playerModel: PlayerModel by inject()
@@ -77,7 +85,7 @@ class LeagueView : View("League View") {
                 }
                 button("Add Player").setOnAction {
                     val newPlayer = PlayerItem(id = UUID.randomUUID().toString())
-                    playerModel.rebind { newPlayer }
+                    playerModel.rebind { item = newPlayer }
                     model.players.value.add(newPlayer)
                 }
                 tableview(model.games) {
@@ -97,8 +105,21 @@ class LeagueView : View("League View") {
                 }
                 button("Add Game").setOnAction {
                     val newGame = GameItem(id = UUID.randomUUID().toString())
-                    gameModel.rebind { newGame }
+                    gameModel.rebind { item = newGame }
                     model.games.value.add(newGame)
+                }
+                button("View Results").setOnAction {
+                    val games = games(model.games.value.map { toGameData(it) })
+                    val modal: ResultsView =
+                            find<ResultsView>(mapOf(
+                                    "players" to model.players.value,
+                                    "leagueState" to calculateNewLeague(
+                                            league = league(toData(model.item)),
+                                            games = games))).apply {
+                                openModal(
+                                        stageStyle = StageStyle.UTILITY,
+                                        block = true)
+                            }
                 }
             }
         }

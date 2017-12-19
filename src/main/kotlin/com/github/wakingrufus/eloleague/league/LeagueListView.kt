@@ -23,6 +23,9 @@ class LeagueListView : View("League List") {
                     controller.leagues.add(newLeague)
                 }
                 button(text = "Delete").setOnAction {
+                    enableWhen{
+                        model.empty.not()
+                    }
                     controller.leagues.remove(model.item)
                 }
                 button(text = "Save All").setOnAction {

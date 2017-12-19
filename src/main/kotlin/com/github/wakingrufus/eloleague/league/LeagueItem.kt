@@ -64,7 +64,7 @@ fun toData(leagueItem: LeagueItem): LeagueData {
             trialKFactorMultiplier = leagueItem.trialKFactorMultiplier,
             teamSize = leagueItem.teamSize,
             players = leagueItem.players.map { com.github.wakingrufus.eloleague.player.toData(it) }.toSet(),
-            games = leagueItem.games.map { com.github.wakingrufus.eloleague.game.toData(it) }.toList()
+            games = leagueItem.games.map { com.github.wakingrufus.eloleague.game.toGameData(it) }.toList()
     )
 }
 
