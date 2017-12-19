@@ -4,17 +4,18 @@ import com.github.wakingrufus.eloleague.data.GameData
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.getValue
 import tornadofx.setValue
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 
 class GameItem(id: String,
-               timestamp: LocalDateTime = LocalDateTime.now(),
+               timestamp: String = DateTimeFormatter.ISO_DATE_TIME.format(ZonedDateTime.now()),
                team1Players: List<PlayerItem> = FXCollections.observableArrayList(),
                team2Players: List<PlayerItem> = FXCollections.observableArrayList(),
                team1Score: Int = 0,
@@ -22,7 +23,7 @@ class GameItem(id: String,
     val idProperty = SimpleStringProperty(this, "id", id)
     var id by idProperty
 
-    val timestampProperty = SimpleObjectProperty<LocalDateTime>(this, "timestamp", timestamp)
+    val timestampProperty = SimpleStringProperty(this, "timestamp", timestamp)
     var timestamp by timestampProperty
 
     val team1PlayersProperty = SimpleListProperty<PlayerItem>(this, "team1Players", FXCollections.observableArrayList(team1Players))
@@ -40,10 +41,10 @@ class GameItem(id: String,
 }
 
 
-fun toData(item: GameItem): GameData {
+fun toGameData(item: GameItem): GameData {
     return GameData(
             id = item.id,
-            timestamp = item.timestamp.toInstant(ZoneOffset.UTC).toEpochMilli(),
+            timestamp = Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(item.timestamp)).toEpochMilli(),
             team1PlayerIds = item.team1Players.toList().map { it.id },
             team2PlayerIds = item.team2Players.toList().map { it.id },
             team1Score = item.team1Score,
@@ -54,7 +55,7 @@ fun toData(item: GameItem): GameData {
 fun fromData(data: GameData): GameItem {
     return GameItem(
             id = data.id,
-            timestamp = Instant.ofEpochMilli(data.timestamp).atOffset(ZoneOffset.UTC).toLocalDateTime(),
+            timestamp = DateTimeFormatter.ISO_DATE_TIME.format(Instant.ofEpochMilli(data.timestamp).atOffset(ZoneOffset.UTC)),
             team1Players = data.team1PlayerIds.toList().map { PlayerItem(id = it) },
             team2Players = data.team2PlayerIds.toList().map { PlayerItem(id = it) },
             team1Score = data.team1Score,
