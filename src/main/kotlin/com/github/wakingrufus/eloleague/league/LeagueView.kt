@@ -7,9 +7,7 @@ import com.github.wakingrufus.eloleague.game.toGameData
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerModel
-import com.github.wakingrufus.eloleague.results.ResultsView
-import com.github.wakingrufus.eloleague.results.games
-import com.github.wakingrufus.eloleague.results.league
+import com.github.wakingrufus.eloleague.results.*
 import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.stage.StageStyle
 import mu.KLogging
@@ -22,7 +20,6 @@ class LeagueView : View("League View") {
     val model: LeagueModel by inject()
     val playerModel: PlayerModel by inject()
     val gameModel: GameModel by inject()
-
 
     override val root = vbox {
         visibleWhen {
@@ -112,13 +109,15 @@ class LeagueView : View("League View") {
                     val games = games(model.games.value.map { toGameData(it) })
                     val modal: ResultsView =
                             find<ResultsView>(mapOf(
-                                    "players" to model.players.value,
-                                    "leagueState" to calculateNewLeague(
-                                            league = league(toData(model.item)),
-                                            games = games))).apply {
+                                    "leagueResultItem" to  results(
+                                            players = model.players.value,
+                                            leagueState = calculateNewLeague(
+                                                    league = league(toData(model.item)),
+                                                    games = games)))).apply {
                                 openModal(
                                         stageStyle = StageStyle.UTILITY,
-                                        block = true)
+                                        block = true
+                                )
                             }
                 }
             }
