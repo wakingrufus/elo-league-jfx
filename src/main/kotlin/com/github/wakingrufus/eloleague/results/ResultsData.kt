@@ -14,8 +14,7 @@ fun league(leagueData: LeagueData): League {
             kFactorBase = leagueData.kFactorBase,
             trialKFactorMultiplier = leagueData.trialKFactorMultiplier,
             xi = leagueData.xi,
-            trialPeriod = leagueData.trialPeriod,
-            teamSize = leagueData.teamSize)
+            trialPeriod = leagueData.trialPeriod)
 }
 
 fun game(gameData: GameData): Game {

@@ -11,7 +11,7 @@ import javafx.collections.FXCollections
 import tornadofx.getValue
 import tornadofx.setValue
 
-val defaultLeague: League = League(teamSize = 1)
+val defaultLeague: League = League()
 
 class LeagueItem(id: String,
                  name: String = "",
@@ -19,31 +19,27 @@ class LeagueItem(id: String,
                  xi: Int = defaultLeague.xi,
                  kFactorBase: Int = defaultLeague.kFactorBase,
                  trialPeriod: Int = defaultLeague.trialPeriod,
-                 trialKFactorMultiplier: Int = defaultLeague.trialKFactorMultiplier,
-                 teamSize: Int = defaultLeague.teamSize) {
+                 trialKFactorMultiplier: Int = defaultLeague.trialKFactorMultiplier) {
     val idProperty = SimpleStringProperty(this, "id", id)
     var id by idProperty
 
     val nameProperty = SimpleStringProperty(this, "name", name)
     var name by nameProperty
 
-    val startingRatingProperty = SimpleIntegerProperty()
+    val startingRatingProperty = SimpleIntegerProperty(this, "startingRating", startingRating)
     var startingRating by startingRatingProperty
 
-    val xiProperty = SimpleIntegerProperty()
+    val xiProperty = SimpleIntegerProperty(this, "xi", xi)
     var xi by xiProperty
 
-    val kFactorBaseProperty = SimpleIntegerProperty()
+    val kFactorBaseProperty = SimpleIntegerProperty(this, "kFactorBase", kFactorBase)
     var kFactorBase by kFactorBaseProperty
 
-    val trialPeriodProperty = SimpleIntegerProperty()
+    val trialPeriodProperty = SimpleIntegerProperty(this, "trialPeriod", trialPeriod)
     var trialPeriod by trialPeriodProperty
 
-    val trialKFactorMultiplierProperty = SimpleIntegerProperty()
+    val trialKFactorMultiplierProperty = SimpleIntegerProperty(this, "trialKFactorMultiplier", trialKFactorMultiplier)
     var trialKFactorMultiplier by trialKFactorMultiplierProperty
-
-    val teamSizeProperty = SimpleIntegerProperty()
-    var teamSize by teamSizeProperty
 
     val playersProperty = SimpleListProperty<PlayerItem>(this, "players", FXCollections.observableArrayList())
     var players by playersProperty
@@ -62,7 +58,6 @@ fun toData(leagueItem: LeagueItem): LeagueData {
             kFactorBase = leagueItem.kFactorBase,
             trialPeriod = leagueItem.trialPeriod,
             trialKFactorMultiplier = leagueItem.trialKFactorMultiplier,
-            teamSize = leagueItem.teamSize,
             players = leagueItem.players.map { com.github.wakingrufus.eloleague.player.toData(it) }.toSet(),
             games = leagueItem.games.map { com.github.wakingrufus.eloleague.game.toGameData(it) }.toList()
     )
@@ -78,10 +73,9 @@ fun fromData(leagueData: LeagueData): LeagueItem {
     item.kFactorBaseProperty.set(leagueData.kFactorBase)
     item.trialPeriodProperty.set(leagueData.trialPeriod)
     item.trialKFactorMultiplierProperty.set(leagueData.trialKFactorMultiplier)
-    item.teamSizeProperty.set(leagueData.teamSize)
     item.playersProperty.setAll(leagueData.players.map { com.github.wakingrufus.eloleague.player.fromData(it) })
     item.gamesProperty.setAll(leagueData.games.map { com.github.wakingrufus.eloleague.game.fromData(it) })
-    item.games.forEach({game ->
+    item.games.forEach({ game ->
         game.team1Players.forEach({ player ->
             player.name = item.players.first { it.id == player.id }?.name
         })
