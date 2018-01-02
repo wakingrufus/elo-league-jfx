@@ -55,11 +55,6 @@ class LeagueView : View("League View") {
                         if (isValidInt(it)) null else error("must be numeric")
                     }
                 }
-                field("teamSize") {
-                    textfield(model.teamSize).validator {
-                        if (isValidInt(it)) null else error("must be numeric")
-                    }
-                }
                 hbox {
                     button("Save") {
                         enableWhen(model.dirty.and(model.valid))
@@ -75,35 +70,39 @@ class LeagueView : View("League View") {
                         }
                     }
                 }
-                tableview(model.players) {
-                    column("Name", PlayerItem::nameProperty)
-                    bindSelected(playerModel)
-                    columnResizePolicy = SmartResize.POLICY
-                }
-                button("Add Player").setOnAction {
-                    val newPlayer = PlayerItem(id = UUID.randomUUID().toString())
-                    playerModel.rebind { item = newPlayer }
-                    model.players.value.add(newPlayer)
-                }
-                tableview(model.games) {
-                    column("Time", GameItem::timestamp)
-                    column<GameItem, String>("Team 1") {
-                        ReadOnlyStringWrapper(it.value.team1Players.
-                                joinToString(transform = { player -> player.name }))
+                fieldset("Players") {
+                    tableview(model.players) {
+                        column("Name", PlayerItem::nameProperty)
+                        bindSelected(playerModel)
+                        columnResizePolicy = SmartResize.POLICY
                     }
-                    column("Team 1 score", GameItem::team1ScoreProperty)
-                    column<GameItem, String>("Team 2") {
-                        ReadOnlyStringWrapper(it.value.team2Players.
-                                joinToString(transform = { player -> player.name }))
+                    button("Add Player").setOnAction {
+                        val newPlayer = PlayerItem(id = UUID.randomUUID().toString())
+                        playerModel.rebind { item = newPlayer }
+                        model.players.value.add(newPlayer)
                     }
-                    column("Team 2 score", GameItem::team2ScoreProperty)
-                    bindSelected(gameModel)
-                    columnResizePolicy = SmartResize.POLICY
                 }
-                button("Add Game").setOnAction {
-                    val newGame = GameItem(id = UUID.randomUUID().toString())
-                    gameModel.rebind { item = newGame }
-                    model.games.value.add(newGame)
+                fieldset("Games") {
+                    tableview(model.games) {
+                        column("Time", GameItem::timestamp)
+                        column<GameItem, String>("Team 1") {
+                            ReadOnlyStringWrapper(it.value.team1Players.
+                                    joinToString(transform = { player -> player.name }))
+                        }
+                        column("Team 1 score", GameItem::team1ScoreProperty)
+                        column<GameItem, String>("Team 2") {
+                            ReadOnlyStringWrapper(it.value.team2Players.
+                                    joinToString(transform = { player -> player.name }))
+                        }
+                        column("Team 2 score", GameItem::team2ScoreProperty)
+                        bindSelected(gameModel)
+                        columnResizePolicy = SmartResize.POLICY
+                    }
+                    button("Add Game").setOnAction {
+                        val newGame = GameItem(id = UUID.randomUUID().toString())
+                        gameModel.rebind { item = newGame }
+                        model.games.value.add(newGame)
+                    }
                 }
                 button("View Results").setOnAction {
                     val games = games(model.games.value.map { toGameData(it) })

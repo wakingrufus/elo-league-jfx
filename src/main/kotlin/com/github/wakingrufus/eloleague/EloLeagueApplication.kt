@@ -17,6 +17,6 @@ class EloLeagueApplication : App(MainView::class, DefaultStyles::class) {
 
         stage.width = rootEm * 80
         stage.height = rootEm * 60
-        stage.icons.add(Image(this.javaClass.getResourceAsStream("/images/avatar-default.png")))
+        stage.icons.add(Image(this.javaClass.getResourceAsStream("/images/icon.png")))
     }
 }

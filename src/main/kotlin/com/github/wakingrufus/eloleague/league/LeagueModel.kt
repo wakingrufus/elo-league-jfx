@@ -10,7 +10,6 @@ class LeagueModel : ItemViewModel<LeagueItem>() {
     var kFactorBase = bind { item?.kFactorBaseProperty }
     var trialPeriod = bind { item?.trialPeriodProperty }
     var trialKFactorMultiplier = bind { item?.trialKFactorMultiplierProperty }
-    var teamSize = bind { item?.teamSizeProperty }
     var players = bind { item?.playersProperty }
     var games = bind { item?.gamesProperty }
 
