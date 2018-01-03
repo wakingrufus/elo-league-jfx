@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.20'
     ext.jackson_version = '2.9.2'
     dependencies {
         classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
@@ -13,7 +13,7 @@ plugins {
     id 'java'
     id 'application'
     id 'idea'
-    id "org.jetbrains.kotlin.jvm" version "1.2.10"
+    id "org.jetbrains.kotlin.jvm" version "1.2.20"
     id 'jacoco'
 }
 apply plugin: 'javafx-gradle-plugin'
@@ -24,7 +24,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-version = "0.5.2"
+version = "0.6.0"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"

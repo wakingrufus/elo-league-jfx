@@ -1,6 +1,6 @@
 package com.github.wakingrufus.eloleague.league
 
-import tornadofx.ItemViewModel
+import tornadofx.*
 
 class LeagueModel : ItemViewModel<LeagueItem>() {
     var id = bind { item?.idProperty }
@@ -12,5 +12,5 @@ class LeagueModel : ItemViewModel<LeagueItem>() {
     var trialKFactorMultiplier = bind { item?.trialKFactorMultiplierProperty }
     var players = bind { item?.playersProperty }
     var games = bind { item?.gamesProperty }
-
+    var tournaments = bind { item?.tournamentsProperty }
 }

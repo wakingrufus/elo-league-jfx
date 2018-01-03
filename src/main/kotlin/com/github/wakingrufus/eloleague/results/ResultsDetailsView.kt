@@ -1,6 +1,5 @@
 package com.github.wakingrufus.eloleague.results
 
-import javafx.beans.binding.Bindings
 import javafx.beans.property.ReadOnlyListWrapper
 import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.collections.ObservableList
@@ -12,9 +11,8 @@ class ResultsDetailsView : Fragment() {
 
     val gameResults: ObservableList<GameResultItem> by param()
 
-    override val root = vbox {
+    override val root = stackpane {
         id = "result-details-wrapper"
-      //  visibleWhen { Bindings.isNotEmpty(gameResults) }
         val table = tableview(ReadOnlyListWrapper(gameResults)) {
             column("time", GameResultItem::entryDate)
             column<GameResultItem, String>("Player") { it.value.player.nameProperty }
