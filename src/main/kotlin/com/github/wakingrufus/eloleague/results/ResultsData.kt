@@ -6,6 +6,7 @@ import com.github.wakingrufus.elo.LeagueState
 import com.github.wakingrufus.elo.Player
 import com.github.wakingrufus.eloleague.data.GameData
 import com.github.wakingrufus.eloleague.data.LeagueData
+import com.github.wakingrufus.eloleague.league.LeagueItem
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import java.time.Instant
 
@@ -43,16 +44,27 @@ fun player(player: Player,
             losses = player.losses)
 }
 
-fun results(players: List<PlayerItem>,
-            leagueState: LeagueState): LeagueResultItem {
+fun results(leagueState: LeagueState,
+            leagueItem: LeagueItem): LeagueResultItem {
     val resultItem = LeagueResultItem()
     resultItem.players.setAll(leagueState.players.values
-            .map { player -> player(player, players.first { it.id == player.id }) })
-    /*
-     resultItem.games.setAll(leagueState.history
-             .map { game -> GameResultItem(
-                     ratingHistoryRecord = game,
-                     gameRecord = games.first{it.id == game.gameId}) })
-                     */
+            .map { player -> player(player, leagueItem.players.first { it.id == player.id }) })
+
+    resultItem.games.setAll(leagueState.history
+            .map { game ->
+                val gameItem = leagueItem.games.first { it.id == game.gameId }
+                GameResultItem(
+                        id = game.gameId,
+                        entryDate = gameItem.timestamp,
+                        player = leagueItem.players.first { it.id == game.playerId },
+                        team1Players = gameItem.team1Players,
+                        team2Players = gameItem.team2Players,
+                        team1Score = gameItem.team1Score,
+                        team2Score = gameItem.team2Score,
+                        startingRating = game.startingRating,
+                        ratingAdjustment = game.ratingAdjustment,
+                        win = game.win)
+            })
+
     return resultItem
 }

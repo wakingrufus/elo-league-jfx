@@ -3,7 +3,7 @@ package com.github.wakingrufus.eloleague.game
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.league.LeagueModel
 import com.github.wakingrufus.eloleague.player.PlayerItem
-import com.github.wakingrufus.eloleague.ui.PlayerChooserView
+import com.github.wakingrufus.eloleague.player.PlayerChooserView
 import javafx.collections.ObservableList
 import javafx.stage.StageStyle
 import mu.KLogging

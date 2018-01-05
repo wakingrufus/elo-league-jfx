@@ -9,6 +9,6 @@ class LeagueResultItem {
     val playersProperty = SimpleListProperty<PlayerResultItem>(this, "players", FXCollections.observableArrayList())
     var players by playersProperty
 
-  //  val gamesProperty = SimpleListProperty<GameResultItem>(this, "games", FXCollections.observableArrayList())
-  //  var games by gamesProperty
+    val gamesProperty = SimpleListProperty<GameResultItem>(this, "games", FXCollections.observableArrayList())
+   var games by gamesProperty
 }
