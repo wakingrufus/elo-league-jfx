@@ -109,7 +109,7 @@ class LeagueView : View("League View") {
                     val modal: ResultsView =
                             find<ResultsView>(mapOf(
                                     "leagueResultItem" to  results(
-                                            players = model.players.value,
+                                            leagueItem = model.item,
                                             leagueState = calculateNewLeague(
                                                     league = league(toData(model.item)),
                                                     games = games)))).apply {

@@ -1,7 +1,9 @@
 package com.github.wakingrufus.eloleague.data
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.util.*
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class LeagueData(
         val id: String,
         val name: String = "",
@@ -11,6 +13,5 @@ data class LeagueData(
         var xi: Int = 1000,
         var kFactorBase: Int = 32,
         var trialPeriod: Int = 10,
-        var trialKFactorMultiplier: Int = 2,
-        var teamSize: Int = 1
+        var trialKFactorMultiplier: Int = 2
 )

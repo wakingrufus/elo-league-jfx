@@ -1,6 +1,5 @@
-package com.github.wakingrufus.eloleague.ui
+package com.github.wakingrufus.eloleague.player
 
-import com.github.wakingrufus.eloleague.player.PlayerItem
 import javafx.collections.ObservableList
 import mu.KLogging
 import tornadofx.*

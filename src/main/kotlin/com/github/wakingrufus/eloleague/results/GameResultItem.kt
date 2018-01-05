@@ -1,13 +1,15 @@
 package com.github.wakingrufus.eloleague.results
 
-import com.github.wakingrufus.elo.Game
-import com.github.wakingrufus.elo.RatingHistoryItem
-import javafx.beans.property.SimpleObjectProperty
-/*
-class GameResultItem(ratingHistoryRecord: RatingHistoryItem, gameRecord: Game) {
-    val ratingHistoryRecordProperty = SimpleObjectProperty<RatingHistoryItem>(this,"ratingHistoryRecord",ratingHistoryRecord)
-    var ratingHistoryRecord by ratingHistoryRecordProperty
+import com.github.wakingrufus.eloleague.player.PlayerItem
 
-   val gameRecordProperty = SimpleObjectProperty<Game>(this, "gameRecord", gameRecord)
-    var gameRecord by gameRecordProperty
-}*/
+data class GameResultItem(val id: String,
+                          val player: PlayerItem,
+                          val ratingAdjustment: Int,
+                          val startingRating: Int,
+                          val win: Boolean,
+                          val team1Score: Int,
+                          val team2Score: Int,
+                          val entryDate: String,
+                          val team1Players: List<PlayerItem>,
+                          val team2Players: List<PlayerItem>
+)
