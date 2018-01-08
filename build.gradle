@@ -24,7 +24,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-version = "0.4.0"
+version = "0.4.1"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
@@ -41,7 +41,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'no.tornado:tornadofx:1.7.12'
     compile 'no.tornado:tornadofx-controls:1.0.6'
-    compile 'com.github.wakingrufus:lib-elo:0.3.0'
+    compile 'com.github.wakingrufus:lib-elo:0.3.1'
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
