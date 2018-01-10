@@ -3,11 +3,15 @@ package com.github.wakingrufus.eloleague.league
 import com.github.wakingrufus.elo.calculateNewLeague
 import com.github.wakingrufus.eloleague.game.GameItem
 import com.github.wakingrufus.eloleague.game.GameModel
+import com.github.wakingrufus.eloleague.game.GameView
 import com.github.wakingrufus.eloleague.game.toGameData
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerModel
-import com.github.wakingrufus.eloleague.results.*
+import com.github.wakingrufus.eloleague.results.ResultsView
+import com.github.wakingrufus.eloleague.results.games
+import com.github.wakingrufus.eloleague.results.league
+import com.github.wakingrufus.eloleague.results.results
 import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.stage.StageStyle
 import mu.KLogging
@@ -100,15 +104,37 @@ class LeagueView : View("League View") {
                     }
                     button("Add Game").setOnAction {
                         val newGame = GameItem(id = UUID.randomUUID().toString())
+                        val newGameModel = GameModel()
                         gameModel.rebind { item = newGame }
-                        model.games.value.add(newGame)
+                        val gameModal: GameView = find<GameView>(mapOf(
+                                "leagueModel" to model,
+                                "onSave" to { newGameItem: GameItem ->
+                                    model.games.value.add(newGameItem)
+                                }
+                        )).apply {
+                            openModal(
+                                    stageStyle = StageStyle.UTILITY,
+                                    block = true
+                            )
+
+                        }
+                    }
+                    button("Edit Game").setOnAction {
+                        val gameModal: GameView = find<GameView>(mapOf(
+                                "leagueModel" to model
+                        )).apply {
+                            openModal(
+                                    stageStyle = StageStyle.UTILITY,
+                                    block = true
+                            )
+                        }
                     }
                 }
                 button("View Results").setOnAction {
                     val games = games(model.games.value.map { toGameData(it) })
                     val modal: ResultsView =
                             find<ResultsView>(mapOf(
-                                    "leagueResultItem" to  results(
+                                    "leagueResultItem" to results(
                                             leagueItem = model.item,
                                             leagueState = calculateNewLeague(
                                                     league = league(toData(model.item)),

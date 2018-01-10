@@ -27,7 +27,7 @@ class ResultsView : Fragment() {
                 columnResizePolicy = SmartResize.POLICY
             }
 
-            table.columns[1].sortType = javafx.scene.control.TableColumn.SortType.ASCENDING
+            table.columns[1].sortType = javafx.scene.control.TableColumn.SortType.DESCENDING
             table.columns[1].sortableProperty().set(true)
             table.sortOrder.add(table.columns[1])
             table.sort()

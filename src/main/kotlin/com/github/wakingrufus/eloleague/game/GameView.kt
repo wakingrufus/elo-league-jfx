@@ -2,19 +2,20 @@ package com.github.wakingrufus.eloleague.game
 
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.league.LeagueModel
-import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerChooserView
+import com.github.wakingrufus.eloleague.player.PlayerItem
 import javafx.collections.ObservableList
 import javafx.stage.StageStyle
 import mu.KLogging
 import tornadofx.*
 import java.time.format.DateTimeFormatter
 
-class GameView : View("Player View") {
+class GameView : Fragment("Player View") {
     companion object : KLogging()
 
-    val gameModel: GameModel by inject()
-    val leagueModel: LeagueModel by inject()
+    val gameModel: GameModel  by inject()
+    val leagueModel: LeagueModel by param()
+    val onSave: (GameItem) -> Unit by param({ _ -> })
 
     val choosePlayer: (allPlayers: ObservableList<PlayerItem>, selectedPlayers: ObservableList<PlayerItem>) -> PlayerItem? = { allPlayers, selectedPlayers ->
         find<PlayerChooserView>(
@@ -24,10 +25,13 @@ class GameView : View("Player View") {
         }.choice
     }
 
+    init {
+        gameModel.team1Players.onChange { gameModel.markDirty(gameModel.team1Players) }
+        gameModel.team2Players.onChange { gameModel.markDirty(gameModel.team2Players) }
+
+    }
+
     override val root = form {
-        visibleWhen {
-            gameModel.empty.not()
-        }
         fieldset("Edit Game") {
             field("time") {
                 textfield(gameModel.timestamp).validator {
@@ -41,21 +45,16 @@ class GameView : View("Player View") {
             }
 
         }
+
         fieldset("Team 1") {
             vbox {
-                gameModel.team1Players.onChange {
-                    if (gameModel.isNotEmpty) {
-                        this.children.setAll(
-                                gameModel.team1Players.value.map {
-                                    field(it.name) {
-                                        button("Remove") {
-                                            action {
-                                                gameModel.team1Players.value.remove(it)
-                                            }
-                                        }
-                                    }
-                                }
-                        )
+                children.bind(gameModel.team1Players.value) { player: PlayerItem ->
+                    field(player.name) {
+                        button("Remove") {
+                            action {
+                                gameModel.team1Players.value.remove(player)
+                            }
+                        }
                     }
                 }
 
@@ -66,6 +65,14 @@ class GameView : View("Player View") {
                             leagueModel.players.value,
                             gameModel.team1Players.value))
                 }
+                /*
+                gameModel.addValidator(this, gameModel.team1Players) {
+                    if (gameModel.team1Players.value.isEmpty()) {
+                        tornadofx.error("team 1 required")
+                    }
+                    null
+                }
+                */
             }
             field("team 1 score") {
                 textfield(gameModel.team1Score).validator {
@@ -76,22 +83,15 @@ class GameView : View("Player View") {
 
         fieldset("Team 2") {
             vbox {
-                gameModel.team2Players.onChange {
-                    if (gameModel.isNotEmpty) {
-                        this.children.setAll(
-                                gameModel.team2Players.value.map {
-                                    field(it.name) {
-                                        button("Remove") {
-                                            action {
-                                                gameModel.team2Players.value.remove(it)
-                                            }
-                                        }
-                                    }
-                                }
-                        )
+                children.bind(gameModel.team2Players.value) { player: PlayerItem ->
+                    field(player.name) {
+                        button("Remove") {
+                            action {
+                                gameModel.team2Players.value.remove(player)
+                            }
+                        }
                     }
                 }
-
             }
             button("Add Player").setOnAction {
                 gameModel.team2Players.value.add(choosePlayer(
@@ -110,13 +110,14 @@ class GameView : View("Player View") {
                 enableWhen(gameModel.dirty.and(gameModel.valid))
                 action {
                     gameModel.commit()
-                    gameModel.item = null
+                    onSave(gameModel.item)
+                    close()
                 }
             }
             button("Cancel") {
                 action {
                     gameModel.rollback()
-                    gameModel.item = null
+                    close()
                 }
             }
         }
