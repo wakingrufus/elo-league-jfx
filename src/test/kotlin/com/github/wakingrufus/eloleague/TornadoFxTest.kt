@@ -1,19 +1,21 @@
 package com.github.wakingrufus.eloleague
 
+import com.github.wakingrufus.eloleague.results.ResultsDetailsViewTest
 import javafx.application.Platform
+import javafx.scene.Node
+import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 import org.testfx.framework.junit.ApplicationTest
-import tornadofx.UIComponent
-import tornadofx.View
-import tornadofx.stackpane
+import tornadofx.*
 import java.time.Instant
 
 open class TornadoFxTest : ApplicationTest() {
     lateinit var wrapper: TestView
+    var scene: Scene? = null
     override fun start(stage: Stage) {
         wrapper = TestView()
-        val scene = Scene(wrapper.root, 800.0, 600.0)
+        scene = Scene(wrapper.root, 800.0, 600.0)
         stage.scene = scene
         stage.show()
     }
@@ -37,4 +39,15 @@ fun waitFor(condition: () -> Boolean, maxMillis: Long = 10000) {
     while (!condition() && Instant.now().isBefore(startTime.plusMillis(maxMillis))) {
         Thread.sleep(1000)
     }
+}
+
+fun printNodes(node: Node, level: Int = 0) {
+
+    ResultsDetailsViewTest.logger.info { " ".repeat(level) + node.toString() }
+    if (node is Parent) {
+        node.childrenUnmodifiable.forEach {
+            printNodes(it, level + 1)
+        }
+    }
+
 }

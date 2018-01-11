@@ -20,15 +20,17 @@ class ResultsDetailsView : Fragment() {
             column<GameResultItem, String>("Player") { it.value.player.nameProperty }
             column("starting Rating", GameResultItem::startingRating)
             column("Adjustment", GameResultItem::ratingAdjustment)
-            column<GameResultItem, String>("Team 1") {
+            val t1 = column<GameResultItem, String>("Team 1") {
                 ReadOnlyStringWrapper(it.value.team1Players.
                         joinToString(transform = { player -> player.name }))
             }
+            t1.id = "team-1"
             column("Score", GameResultItem::team1Score)
-            column<GameResultItem, String>("Team 2") {
-                ReadOnlyStringWrapper(it.value.team1Players.
+            val t2 = column<GameResultItem, String>("Team 2") {
+                ReadOnlyStringWrapper(it.value.team2Players.
                         joinToString(transform = { player -> player.name }))
             }
+            t2.id = "team-2"
             column("Score", GameResultItem::team2Score)
             columnResizePolicy = SmartResize.POLICY
         }
