@@ -20,10 +20,13 @@ build:
     - rm -rf build
     - gradle wrapper
     - ./gradlew clean build
+  post_ci:
     - cp build/test-results/test/*.xml shippable/testresults
     - cp build/reports/jacoco/test/jacocoTestReport.xml shippable/codecoverage
     - cp -r build/jacoco/test.exec shippable/codecoverage/target/site/jacoco
     - cp -r build/classes shippable/codecoverage/target
+  on_failure:
+    - cp build/test-results/test/*.xml shippable/testresults
   on_success:
     - export TAG_NAME=`git describe --exact-match --tags HEAD`
     - export BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
@@ -32,3 +35,4 @@ build:
     - if [ "$BRANCH_NAME" = "master" ]; then aws s3 cp $SHIPPABLE_BUILD_DIR/build/distributions/elo-league-jfx-*.zip s3://$CD_BUCKET/$CD_KEY; fi
     - if [ "$TAG_NAME" != "" ]; then aws s3 cp $SHIPPABLE_BUILD_DIR/build/distributions/elo-league-jfx-*.zip s3://$CD_BUCKET/$RELEASE_KEY; fi
     - if [ "$TAG_NAME" != "" ]; then aws s3 cp $SHIPPABLE_BUILD_DIR/build/jfx/native/elo-league-jfx-*.deb s3://$CD_BUCKET/$RELEASE_KEY_DEB; fi
+  advancedReporting: true
