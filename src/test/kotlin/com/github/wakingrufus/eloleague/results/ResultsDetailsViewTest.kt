@@ -6,8 +6,6 @@ import com.github.wakingrufus.eloleague.printNodes
 import com.github.wakingrufus.eloleague.waitFor
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.scene.Node
-import javafx.scene.Parent
 import mu.KLogging
 import org.junit.Test
 import org.testfx.api.FxAssert
@@ -44,9 +42,10 @@ class ResultsDetailsViewTest : TornadoFxTest() {
         showViewWithParams<ResultsDetailsView>(mapOf(
                 "gameResults" to resultDetails
         ))
-        waitFor({scene!!.root.childrenUnmodifiable[0].isVisible})
-        FxAssert.verifyThat("#result-details-wrapper", NodeMatchers.isVisible())
+        waitFor({ scene!!.root.childrenUnmodifiable[0].isVisible })
         printNodes(scene!!.root)
+        FxAssert.verifyThat("#result-details-wrapper", NodeMatchers.isVisible())
+        FxAssert.verifyThat("#result-details-wrapper .table-view", NodeMatchers.isVisible())
         FxAssert.verifyThat("#result-details-wrapper .table-view .table-row-cell #team-1",
                 NodeMatchers.hasText("Adam, Beth"))
         FxAssert.verifyThat("#result-details-wrapper .table-view .table-row-cell #team-2",
