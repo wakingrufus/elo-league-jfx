@@ -24,7 +24,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-version = "0.5.1"
+version = "0.5.2"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"

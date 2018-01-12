@@ -1,7 +1,9 @@
 package com.github.wakingrufus.eloleague.results
 
+import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.stage.StageStyle
 import mu.KLogging
 import tornadofx.*
 
@@ -13,7 +15,7 @@ class ResultsView : Fragment() {
 
     override val root = borderpane {
 
-        left {
+        center {
             id = "results-wrapper"
 
             val table = tableview(leagueResultItem.players) {
@@ -39,9 +41,18 @@ class ResultsView : Fragment() {
             }
 
         }
-        center {
-            this += find<ResultsDetailsView>(mapOf("gameResults" to gameResults))
+        bottom {
+            button("View Details") {
+                enableWhen { Bindings.isNotEmpty(gameResults) }
+                setOnAction {
+                    find<ResultsDetailsView>(mapOf("gameResults" to gameResults)).apply {
+                        openModal(
+                                stageStyle = StageStyle.UTILITY,
+                                block = true
+                        )
+                    }
+                }
+            }
         }
     }
-
 }

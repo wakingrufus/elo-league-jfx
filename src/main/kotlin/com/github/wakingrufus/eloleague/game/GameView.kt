@@ -45,66 +45,72 @@ class GameView : Fragment("Player View") {
             }
 
         }
+        hbox {
+            fieldset("Team 1") {
+                vbox {
+                    style {
+                        minHeight = 8.em
+                    }
+                    children.bind(gameModel.team1Players.value) { player: PlayerItem ->
+                        field(player.name) {
+                            button("Remove") {
+                                action {
+                                    gameModel.team1Players.value.remove(player)
+                                }
+                            }
+                        }
+                    }
 
-        fieldset("Team 1") {
-            vbox {
-                children.bind(gameModel.team1Players.value) { player: PlayerItem ->
-                    field(player.name) {
-                        button("Remove") {
-                            action {
-                                gameModel.team1Players.value.remove(player)
+                }
+                button("Add Player") {
+                    action {
+                        gameModel.team1Players.value.add(choosePlayer(
+                                leagueModel.players.value,
+                                gameModel.team1Players.value))
+                    }
+                    /*
+                        gameModel.addValidator(this, gameModel.team1Players) {
+                            if (gameModel.team1Players.value.isEmpty()) {
+                                tornadofx.error("team 1 required")
+                            }
+                            null
+                        }
+                        */
+                }
+                field("team 1 score") {
+                    textfield(gameModel.team1Score).validator {
+                        if (isValidInt(it)) null else error("must be numeric")
+                    }
+                }
+            }
+
+            fieldset("Team 2") {
+                vbox {
+                    style {
+                        minHeight = 8.em
+                    }
+                    children.bind(gameModel.team2Players.value) { player: PlayerItem ->
+                        field(player.name) {
+                            button("Remove") {
+                                action {
+                                    gameModel.team2Players.value.remove(player)
+                                }
                             }
                         }
                     }
                 }
-
-            }
-            button("Add Player") {
-                action {
-                    gameModel.team1Players.value.add(choosePlayer(
+                button("Add Player").setOnAction {
+                    gameModel.team2Players.value.add(choosePlayer(
                             leagueModel.players.value,
-                            gameModel.team1Players.value))
+                            gameModel.team2Players.value))
                 }
-                /*
-                gameModel.addValidator(this, gameModel.team1Players) {
-                    if (gameModel.team1Players.value.isEmpty()) {
-                        tornadofx.error("team 1 required")
-                    }
-                    null
-                }
-                */
-            }
-            field("team 1 score") {
-                textfield(gameModel.team1Score).validator {
-                    if (isValidInt(it)) null else error("must be numeric")
-                }
-            }
-        }
-
-        fieldset("Team 2") {
-            vbox {
-                children.bind(gameModel.team2Players.value) { player: PlayerItem ->
-                    field(player.name) {
-                        button("Remove") {
-                            action {
-                                gameModel.team2Players.value.remove(player)
-                            }
-                        }
+                field("team 2 score") {
+                    textfield(gameModel.team2Score).validator {
+                        if (isValidInt(it)) null else error("must be numeric")
                     }
                 }
             }
-            button("Add Player").setOnAction {
-                gameModel.team2Players.value.add(choosePlayer(
-                        leagueModel.players.value,
-                        gameModel.team2Players.value))
-            }
-            field("team 2 score") {
-                textfield(gameModel.team2Score).validator {
-                    if (isValidInt(it)) null else error("must be numeric")
-                }
-            }
         }
-
         buttonbar {
             button("Save") {
                 enableWhen(gameModel.dirty.and(gameModel.valid))

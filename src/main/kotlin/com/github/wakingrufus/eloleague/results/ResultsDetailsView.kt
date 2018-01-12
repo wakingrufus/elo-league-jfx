@@ -14,7 +14,7 @@ class ResultsDetailsView : Fragment() {
 
     override val root = vbox {
         id = "result-details-wrapper"
-        visibleWhen { Bindings.isNotEmpty(gameResults) }
+      //  visibleWhen { Bindings.isNotEmpty(gameResults) }
         val table = tableview(ReadOnlyListWrapper(gameResults)) {
             column("time", GameResultItem::entryDate)
             column<GameResultItem, String>("Player") { it.value.player.nameProperty }
