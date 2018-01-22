@@ -2,33 +2,20 @@ package com.github.wakingrufus.eloleague.game
 
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.league.LeagueModel
-import com.github.wakingrufus.eloleague.player.PlayerChooserView
-import com.github.wakingrufus.eloleague.player.PlayerItem
-import javafx.collections.ObservableList
-import javafx.stage.StageStyle
+import com.github.wakingrufus.eloleague.player.PlayerListBuilder
 import mu.KLogging
 import tornadofx.*
 import java.time.format.DateTimeFormatter
 
-class GameView : Fragment("Player View") {
+class GameView : Fragment("Edit Game") {
     companion object : KLogging()
 
     val gameModel: GameModel  by inject()
-    val leagueModel: LeagueModel by param()
-    val onSave: (GameItem) -> Unit by param({ _ -> })
-
-    val choosePlayer: (allPlayers: ObservableList<PlayerItem>, selectedPlayers: ObservableList<PlayerItem>) -> PlayerItem? = { allPlayers, selectedPlayers ->
-        find<PlayerChooserView>(
-                mapOf("players" to allPlayers.filter { lp -> !selectedPlayers.any { lp.id == it.id } }.observable())
-        ).apply {
-            openModal(stageStyle = StageStyle.UTILITY, block = true)
-        }.choice
-    }
+    val leagueModel: LeagueModel by inject()
 
     init {
         gameModel.team1Players.onChange { gameModel.markDirty(gameModel.team1Players) }
         gameModel.team2Players.onChange { gameModel.markDirty(gameModel.team2Players) }
-
     }
 
     override val root = form {
@@ -47,36 +34,11 @@ class GameView : Fragment("Player View") {
         }
         hbox {
             fieldset("Team 1") {
-                vbox {
-                    style {
-                        minHeight = 8.em
-                    }
-                    children.bind(gameModel.team1Players.value) { player: PlayerItem ->
-                        field(player.name) {
-                            button("Remove") {
-                                action {
-                                    gameModel.team1Players.value.remove(player)
-                                }
-                            }
-                        }
-                    }
-
-                }
-                button("Add Player") {
-                    action {
-                        gameModel.team1Players.value.add(choosePlayer(
-                                leagueModel.players.value,
-                                gameModel.team1Players.value))
-                    }
-                    /*
-                        gameModel.addValidator(this, gameModel.team1Players) {
-                            if (gameModel.team1Players.value.isEmpty()) {
-                                tornadofx.error("team 1 required")
-                            }
-                            null
-                        }
-                        */
-                }
+                this += find<PlayerListBuilder>(mapOf(
+                        "selectedPlayers" to gameModel.team1Players.value,
+                        "otherIneligiblePlayers" to gameModel.team2Players.value,
+                        "allPlayers" to leagueModel.players.value
+                ))
                 field("team 1 score") {
                     textfield(gameModel.team1Score).validator {
                         if (isValidInt(it)) null else error("must be numeric")
@@ -85,25 +47,11 @@ class GameView : Fragment("Player View") {
             }
 
             fieldset("Team 2") {
-                vbox {
-                    style {
-                        minHeight = 8.em
-                    }
-                    children.bind(gameModel.team2Players.value) { player: PlayerItem ->
-                        field(player.name) {
-                            button("Remove") {
-                                action {
-                                    gameModel.team2Players.value.remove(player)
-                                }
-                            }
-                        }
-                    }
-                }
-                button("Add Player").setOnAction {
-                    gameModel.team2Players.value.add(choosePlayer(
-                            leagueModel.players.value,
-                            gameModel.team2Players.value))
-                }
+                this += find<PlayerListBuilder>(mapOf(
+                        "selectedPlayers" to gameModel.team2Players.value,
+                        "otherIneligiblePlayers" to gameModel.team1Players.value,
+                        "allPlayers" to leagueModel.players.value
+                ))
                 field("team 2 score") {
                     textfield(gameModel.team2Score).validator {
                         if (isValidInt(it)) null else error("must be numeric")
@@ -116,7 +64,9 @@ class GameView : Fragment("Player View") {
                 enableWhen(gameModel.dirty.and(gameModel.valid))
                 action {
                     gameModel.commit()
-                    onSave(gameModel.item)
+                    if (leagueModel.games.value.none { it.id == gameModel.id.value }) {
+                        leagueModel.games.value.addAll(gameModel.item)
+                    }
                     close()
                 }
             }

@@ -12,7 +12,7 @@ class PlayerChooserView : Fragment() {
 
     override val root = vbox {
         id = "player-choices"
-        children.bind(players) {
+        children.bind(players.sorted(Comparator.comparing(PlayerItem::name))) {
             button(it.name) {
                 id = "account-choice-" + it.name
                 action {

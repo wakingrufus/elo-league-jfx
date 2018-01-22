@@ -3,13 +3,15 @@ package com.github.wakingrufus.eloleague.league
 import com.github.wakingrufus.elo.League
 import com.github.wakingrufus.eloleague.data.LeagueData
 import com.github.wakingrufus.eloleague.game.GameItem
+import com.github.wakingrufus.eloleague.game.toData
 import com.github.wakingrufus.eloleague.player.PlayerItem
+import com.github.wakingrufus.eloleague.swiss.SwissTournamentItem
+import com.github.wakingrufus.eloleague.swiss.toData
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import tornadofx.getValue
-import tornadofx.setValue
+import tornadofx.*
 
 val defaultLeague: League = League()
 
@@ -47,6 +49,9 @@ class LeagueItem(id: String,
     val gamesProperty = SimpleListProperty<GameItem>(this, "games", FXCollections.observableArrayList())
     var games by gamesProperty
 
+    val tournamentsProperty = SimpleListProperty<SwissTournamentItem>(this, "tournaments", FXCollections.observableArrayList())
+    var tournaments by tournamentsProperty
+
 }
 
 fun toData(leagueItem: LeagueItem): LeagueData {
@@ -59,20 +64,21 @@ fun toData(leagueItem: LeagueItem): LeagueData {
             trialPeriod = leagueItem.trialPeriod,
             trialKFactorMultiplier = leagueItem.trialKFactorMultiplier,
             players = leagueItem.players.map { com.github.wakingrufus.eloleague.player.toData(it) }.toSet(),
-            games = leagueItem.games.map { com.github.wakingrufus.eloleague.game.toGameData(it) }.toList()
+            games = leagueItem.games.map(GameItem::toData).toList(),
+            tournamentData = leagueItem.tournaments.map(SwissTournamentItem::toData).toList()
     )
 }
 
 fun fromData(leagueData: LeagueData): LeagueItem {
     val item = LeagueItem(
             id = leagueData.id,
-            name = leagueData.name
+            name = leagueData.name,
+            startingRating = leagueData.startingRating,
+            xi = leagueData.xi,
+            kFactorBase = leagueData.kFactorBase,
+            trialPeriod = leagueData.trialPeriod,
+            trialKFactorMultiplier = leagueData.trialKFactorMultiplier
     )
-    item.startingRatingProperty.set(leagueData.startingRating)
-    item.xiProperty.set(leagueData.xi)
-    item.kFactorBaseProperty.set(leagueData.kFactorBase)
-    item.trialPeriodProperty.set(leagueData.trialPeriod)
-    item.trialKFactorMultiplierProperty.set(leagueData.trialKFactorMultiplier)
     item.playersProperty.setAll(leagueData.players.map { com.github.wakingrufus.eloleague.player.fromData(it) })
     item.gamesProperty.setAll(leagueData.games.map { com.github.wakingrufus.eloleague.game.fromData(it) })
     item.games.forEach({ game ->
@@ -83,5 +89,8 @@ fun fromData(leagueData: LeagueData): LeagueItem {
             player.name = item.players.first { it.id == player.id }?.name
         })
     })
+    if (leagueData.tournamentData.isNotEmpty()) {
+        item.tournamentsProperty.setAll(leagueData.tournamentData.map { com.github.wakingrufus.eloleague.swiss.fromData(it, item.players) })
+    }
     return item
 }

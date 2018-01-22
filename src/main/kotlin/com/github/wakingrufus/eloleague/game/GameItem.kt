@@ -6,16 +6,14 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import tornadofx.getValue
-import tornadofx.setValue
+import tornadofx.*
 import java.time.Instant
 import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
 class GameItem(id: String,
-               timestamp: String = DateTimeFormatter.ISO_DATE_TIME.format(ZonedDateTime.now()),
+               timestamp: String = DateTimeFormatter.ISO_DATE_TIME.format(Instant.now().atOffset(ZoneOffset.UTC)),
                team1Players: List<PlayerItem> = FXCollections.observableArrayList(),
                team2Players: List<PlayerItem> = FXCollections.observableArrayList(),
                team1Score: Int = 0,
@@ -32,23 +30,23 @@ class GameItem(id: String,
     val team2PlayersProperty = SimpleListProperty<PlayerItem>(this, "team2Players", FXCollections.observableArrayList(team2Players))
     var team2Players by team2PlayersProperty
 
-    val team1ScoreProperty = SimpleIntegerProperty(team1Score, "team1Score", team1Score)
+    val team1ScoreProperty = SimpleIntegerProperty(this, "team1Score", team1Score)
     var team1Score by team1ScoreProperty
 
-    val team2ScoreProperty = SimpleIntegerProperty(team2Score, "team2Score", team2Score)
+    val team2ScoreProperty = SimpleIntegerProperty(this, "team2Score", team2Score)
     var team2Score by team2ScoreProperty
 
 }
 
 
-fun toGameData(item: GameItem): GameData {
+fun GameItem.toData(): GameData {
     return GameData(
-            id = item.id,
-            timestamp = Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(item.timestamp)).toEpochMilli(),
-            team1PlayerIds = item.team1Players.toList().map { it.id },
-            team2PlayerIds = item.team2Players.toList().map { it.id },
-            team1Score = item.team1Score,
-            team2Score = item.team2Score
+            id = this.id,
+            timestamp = Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(this.timestamp)).toEpochMilli(),
+            team1PlayerIds = this.team1Players.toList().map { it.id },
+            team2PlayerIds = this.team2Players.toList().map { it.id },
+            team1Score = this.team1Score,
+            team2Score = this.team2Score
     )
 }
 
