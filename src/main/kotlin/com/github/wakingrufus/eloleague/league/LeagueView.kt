@@ -12,13 +12,11 @@ import com.github.wakingrufus.eloleague.results.results
 import com.github.wakingrufus.eloleague.swiss.SwissTournamentItem
 import com.github.wakingrufus.eloleague.swiss.SwissTournamentModel
 import com.github.wakingrufus.eloleague.swiss.SwissView
-import javafx.beans.binding.BooleanBinding
 import javafx.scene.control.TabPane
 import javafx.stage.StageStyle
 import mu.KLogging
 import tornadofx.*
 import java.util.*
-import javax.naming.Binding
 
 class LeagueView : View("League View") {
     companion object : KLogging()
@@ -63,7 +61,7 @@ class LeagueView : View("League View") {
                     this += GameListView::class
                 }
                 tab("tournaments") {
-                    visibleWhen(false.toProperty())
+                    //   visibleWhen(false.toProperty())
                     fieldset("Tournaments") {
                         val tournamentTable = tableview(model.tournaments) {
                             column("Time", SwissTournamentItem::startTime)
@@ -107,18 +105,17 @@ class LeagueView : View("League View") {
 
             button("View Results").setOnAction {
                 val games = games(model.games.value.map(GameItem::toData))
-                val modal: ResultsView =
-                        find<ResultsView>(mapOf(
-                                "leagueResultItem" to results(
-                                        leagueItem = model.item,
-                                        leagueState = calculateNewLeague(
-                                                league = league(toData(model.item)),
-                                                games = games)))).apply {
-                            openModal(
-                                    stageStyle = StageStyle.UTILITY,
-                                    block = false
-                            )
-                        }
+                find<ResultsView>(mapOf(
+                        "leagueResultItem" to results(
+                                leagueItem = model.item,
+                                leagueState = calculateNewLeague(
+                                        league = league(toData(model.item)),
+                                        games = games)))).apply {
+                    openModal(
+                            stageStyle = StageStyle.UTILITY,
+                            block = false
+                    )
+                }
             }
 
         }

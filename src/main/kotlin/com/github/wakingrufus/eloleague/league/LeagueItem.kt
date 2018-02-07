@@ -6,7 +6,7 @@ import com.github.wakingrufus.eloleague.game.GameItem
 import com.github.wakingrufus.eloleague.game.toData
 import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.swiss.SwissTournamentItem
-import com.github.wakingrufus.eloleague.swiss.toData
+import com.github.wakingrufus.eloleague.swiss.fromTournamentData
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
@@ -90,7 +90,7 @@ fun fromData(leagueData: LeagueData): LeagueItem {
         })
     })
     if (leagueData.tournamentData.isNotEmpty()) {
-        item.tournamentsProperty.setAll(leagueData.tournamentData.map { com.github.wakingrufus.eloleague.swiss.fromData(it, item.players) })
+        item.tournamentsProperty.setAll(leagueData.tournamentData.map { fromTournamentData(data = it, league = item) })
     }
     return item
 }

@@ -2,6 +2,7 @@ package com.github.wakingrufus.eloleague.game
 
 import com.github.wakingrufus.eloleague.isValidInt
 import com.github.wakingrufus.eloleague.league.LeagueModel
+import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerListBuilder
 import mu.KLogging
 import tornadofx.*
@@ -36,7 +37,7 @@ class GameView : Fragment("Edit Game") {
             fieldset("Team 1") {
                 this += find<PlayerListBuilder>(mapOf(
                         "selectedPlayers" to gameModel.team1Players.value,
-                        "otherIneligiblePlayers" to gameModel.team2Players.value,
+                        "otherIneligiblePlayers" to { gameModel.team2Players.value.map(PlayerItem::id) },
                         "allPlayers" to leagueModel.players.value
                 ))
                 field("team 1 score") {
@@ -49,7 +50,7 @@ class GameView : Fragment("Edit Game") {
             fieldset("Team 2") {
                 this += find<PlayerListBuilder>(mapOf(
                         "selectedPlayers" to gameModel.team2Players.value,
-                        "otherIneligiblePlayers" to gameModel.team1Players.value,
+                        "otherIneligiblePlayers" to { gameModel.team1Players.value.map(PlayerItem::id) },
                         "allPlayers" to leagueModel.players.value
                 ))
                 field("team 2 score") {

@@ -2,9 +2,8 @@ package com.github.wakingrufus.eloleague.swiss
 
 import com.github.wakingrufus.eloleague.data.SwissTeamData
 import com.github.wakingrufus.eloleague.data.SwissTournamentData
-import com.github.wakingrufus.eloleague.player.PlayerItem
+import com.github.wakingrufus.eloleague.league.LeagueItem
 import javafx.beans.property.SimpleListProperty
-import javafx.beans.property.SimpleMapProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.*
@@ -25,54 +24,41 @@ class SwissTournamentItem(id: String = UUID.randomUUID().toString(),
     val teamsProperty = SimpleListProperty<SwissTeamItem>(this, "teams", FXCollections.observableArrayList())
     var teams by teamsProperty
 
-    val roundsProperty = SimpleMapProperty<Int, SwissRoundItem>(this, "rounds", FXCollections.observableHashMap())
+    val roundsProperty = SimpleListProperty<SwissRoundItem>(this, "rounds", FXCollections.observableArrayList())
     var rounds by roundsProperty
 
     val startTimeProperty = SimpleStringProperty(this, "startTime", startTime)
     var startTime by startTimeProperty
+
+    fun toData(): SwissTournamentData =
+            SwissTournamentData(
+                    id = this.id,
+                    name = this.name,
+                    teams = this.teams.map {
+                        SwissTeamData(
+                                id = it.id,
+                                name = it.name,
+                                playerIds = it.players.map { it.id }.toSet())
+                    },
+                    rounds = rounds.map(SwissRoundItem::toData),
+                    startTime = Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(this.startTime)).toEpochMilli())
 }
 
-
-fun SwissTournamentItem.toData(): SwissTournamentData =
-        SwissTournamentData(
-                id = this.id,
-                name = this.name,
-                teams = this.teams.map {
-                    SwissTeamData(
-                            id = it.id,
-                            name = it.name,
-                            playerIds = it.players.map { it.id }.toSet())
-                },
-                rounds = mapOf(),
-                startTime = Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(this.startTime)).toEpochMilli()
-        )
-
-
-fun fromData(data: SwissTournamentData, leaguePlayers: List<PlayerItem>)
-        : SwissTournamentItem {
-    val tournamentItem = SwissTournamentItem(
+fun fromTournamentData(data: SwissTournamentData, league: LeagueItem): SwissTournamentItem {
+    return SwissTournamentItem(
             id = data.id,
             name = data.name,
             startTime = DateTimeFormatter.ISO_DATE_TIME.format(Instant.ofEpochMilli(data.startTime).atOffset(ZoneOffset.UTC))
-    )
-    tournamentItem.teams.setAll(data.teams.map { teamData ->
-        val teamItem =
-                SwissTeamItem(id = teamData.id,
-                        name = teamData.name)
-        teamItem.players.addAll(teamData.playerIds
-                .map { teamPlayerId ->
-                    leaguePlayers
-                            .first { playerItem ->
-                                playerItem.id == teamPlayerId
-                            }
+    ).apply {
+        teams.setAll(data.teams.map { teamData ->
+            SwissTeamItem(id = teamData.id, name = teamData.name).apply {
+                players.addAll(teamData.playerIds.map { teamPlayerId ->
+                    league.playersProperty.first { playerItem ->
+                        playerItem.id == teamPlayerId
+                    }
                 })
-        teamItem
-    })
-    data.rounds.keys.sorted().map {
-        data.rounds[it]
-    }.map {
-
+            }
+        })
+        rounds.setAll(data.rounds.map { fromRoundData(data = it, tournament = this) })
     }
-    //  tournamentItem.rounds.se
-    return tournamentItem
 }
