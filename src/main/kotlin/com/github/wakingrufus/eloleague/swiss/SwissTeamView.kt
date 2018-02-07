@@ -1,6 +1,7 @@
 package com.github.wakingrufus.eloleague.swiss
 
 import com.github.wakingrufus.eloleague.league.LeagueModel
+import com.github.wakingrufus.eloleague.player.PlayerItem
 import com.github.wakingrufus.eloleague.player.PlayerListBuilder
 import mu.KLogging
 import tornadofx.*
@@ -8,9 +9,9 @@ import tornadofx.*
 class SwissTeamView : Fragment() {
     companion object : KLogging()
 
-    val teamModel: SwissTeamModel by inject()
-    val leagueModel: LeagueModel by inject()
-    val tournament: SwissTournamentModel by inject()
+    val teamModel: SwissTeamModel by param()
+    val leagueModel: LeagueModel by param()
+    val tournament: SwissTournamentModel by param()
 
     init {
         teamModel.players.onChange { teamModel.markDirty(teamModel.players) }
@@ -26,7 +27,7 @@ class SwissTeamView : Fragment() {
                 this += find<PlayerListBuilder>(mapOf(
                         "selectedPlayers" to teamModel.players.value,
                         "allPlayers" to leagueModel.players.value,
-                        "otherIneligiblePlayers" to tournament.teams.value.flatMap { it.players }
+                        "otherIneligiblePlayers" to { tournament.teams.value.flatMap { it.players.map(PlayerItem::id) } }
                 ))
             }
             buttonbar {

@@ -10,18 +10,18 @@ data class SwissTeamData(
 
 data class SwissGameData(val id: String,
                          val gameId: String,
-                         val winningTeam: String)
+                         val winningTeamId: String)
 
-data class SwissRound(val results: List<SwissResultData>)
+data class SwissRound(val roundNumber: Int, val pairings: List<SwissPairingData>)
 
-data class SwissResultData(val pairing: SwissPairing, val games: List<SwissGameData>)
-
-data class SwissPairing(val id: String,
-                        val teamIds: Pair<String, String>)
+data class SwissPairingData(val id: String,
+                            val teamIds: List<String>,
+                            val games: List<SwissGameData>,
+                            val drops: List<String> = ArrayList())
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class SwissTournamentData(val id: String,
                                val startTime: Long,
                                val name: String,
                                val teams: List<SwissTeamData>,
-                               val rounds: Map<Int, SwissRound>)
+                               val rounds: List<SwissRound>)
