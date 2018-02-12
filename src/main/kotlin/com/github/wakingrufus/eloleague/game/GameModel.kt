@@ -1,12 +1,12 @@
 package com.github.wakingrufus.eloleague.game
 
-import tornadofx.ItemViewModel
+import tornadofx.*
 
 class GameModel : ItemViewModel<GameItem>() {
-    var id = bind { item?.idProperty }
-    var timestamp = bind { item?.timestampProperty }
-    var team1Players = bind { item?.team1PlayersProperty }
-    var team2Players = bind { item?.team2PlayersProperty }
-    var team1Score = bind { item?.team1ScoreProperty }
-    var team2Score = bind { item?.team2ScoreProperty }
+    var id = bind(GameItem::idProperty)
+    var timestamp = bind(GameItem::timestampProperty)
+    var team1Players = bind(GameItem::team1PlayersProperty)
+    var team2Players = bind(GameItem::team2PlayersProperty)
+    var team1Score = bind(GameItem::team1ScoreProperty)
+    var team2Score = bind(GameItem::team2ScoreProperty)
 }
