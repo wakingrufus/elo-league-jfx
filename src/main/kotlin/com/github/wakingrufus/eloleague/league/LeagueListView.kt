@@ -17,20 +17,23 @@ class LeagueListView : View("League List") {
                     bindSelected(model)
                     columnResizePolicy = SmartResize.POLICY
                 }
-                button(text = "New").setOnAction {
-                    val newLeague = controller.newLeague()
-                    model.rebind { item = newLeague }
-                    controller.leagues.add(newLeague)
-                }
-                button(text = "Delete").setOnAction {
-                    enableWhen{
-                        model.empty.not()
+                buttonbar {
+                    button(text = "New").setOnAction {
+                        val newLeague = controller.newLeague()
+                        model.rebind { item = newLeague }
+                        controller.leagues.add(newLeague)
                     }
-                    controller.leagues.remove(model.item)
+                    button(text = "Delete") {
+                        enableWhen {
+                            model.empty.not()
+                        }
+                        action {
+                            controller.leagues.remove(model.item)
+                        }
+                    }
+                    button(text = "Save All").setOnAction {
+                        controller.save()
+                    }
                 }
-                button(text = "Save All").setOnAction {
-                    controller.save()
-                }
-
             }
 }

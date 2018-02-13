@@ -10,9 +10,10 @@ import tornadofx.*
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
-class GameItem(id: String,
+class GameItem(id: String = UUID.randomUUID().toString(),
                timestamp: String = DateTimeFormatter.ISO_DATE_TIME.format(Instant.now().atOffset(ZoneOffset.UTC)),
                team1Players: List<PlayerItem> = FXCollections.observableArrayList(),
                team2Players: List<PlayerItem> = FXCollections.observableArrayList(),
