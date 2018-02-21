@@ -6,3 +6,8 @@ gradlew
 .idea/
 shippable/
 *.iml
+prime/
+snap/
+parts/
+stage/
+*.snap

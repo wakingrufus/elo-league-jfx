@@ -1,0 +1,30 @@
+name: tourny
+version: '0.8.0'
+summary: Application for tracking Elo ratings and running Swiss tournaments
+description: |
+
+grade: devel
+confinement: devmode
+
+apps:
+  tourny:
+    command: desktop-launch tourny/bin/elo-league-jfx
+    plugs: [home, x11, gsettings]
+
+parts:
+  tourny:
+    after: []
+    plugin: gradle
+    source: .
+    build: |
+      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+      gradle build
+    install: |
+      unzip build/distributions/elo-league-jfx-*.zip -d $SNAPCRAFT_PART_INSTALL/
+      mv $SNAPCRAFT_PART_INSTALL/elo-league-jfx-* $SNAPCRAFT_PART_INSTALL/tourny
+    build-packages:
+      - unzip
+      - openjdk-8-jdk
+      - openjfx
+    stage-packages:
+      - openjdk-8-jdk
