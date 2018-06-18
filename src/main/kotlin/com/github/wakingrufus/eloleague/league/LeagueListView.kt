@@ -1,38 +1,42 @@
 package com.github.wakingrufus.eloleague.league
 
+import com.github.wakingrufus.eloleague.State
 import mu.KLogging
 import tornadofx.*
 
 class LeagueListView : View("League List") {
     companion object : KLogging()
 
-    val controller: LeagueListController by inject()
-
     val model: LeagueModel by inject()
+
+    init {
+        State.loadFromFile()
+    }
 
     override val root =
             vbox {
-                tableview(controller.leagues) {
+                tableview(State.localLeagues) {
                     column("Name", LeagueItem::nameProperty)
                     bindSelected(model)
                     columnResizePolicy = SmartResize.POLICY
                 }
                 buttonbar {
                     button(text = "New").setOnAction {
-                        val newLeague = controller.newLeague()
+                        val newLeague = LeagueItem()
                         model.rebind { item = newLeague }
-                        controller.leagues.add(newLeague)
+                        State.addNewLeague(newLeague)
                     }
                     button(text = "Delete") {
                         enableWhen {
                             model.empty.not()
                         }
                         action {
-                            controller.leagues.remove(model.item)
+                            State.removeLeague(model.item)
                         }
                     }
                     button(text = "Save All").setOnAction {
-                        controller.save()
+                        log.info("saving data")
+                        State.saveToFile()
                     }
                 }
             }

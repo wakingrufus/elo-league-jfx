@@ -12,10 +12,11 @@ import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.*
+import java.util.*
 
 val defaultLeague: League = League()
 
-class LeagueItem(id: String,
+class LeagueItem(id: String = UUID.randomUUID().toString(),
                  name: String = "",
                  startingRating: Int = defaultLeague.startingRating,
                  xi: Int = defaultLeague.xi,
