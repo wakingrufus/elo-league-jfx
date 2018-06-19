@@ -23,7 +23,6 @@ class LeagueView : View("League View") {
 
     val model: LeagueModel by inject()
     val playerModel: PlayerModel by inject()
-    val gameModel: GameModel by inject()
     val tournamentModel: SwissTournamentModel by inject()
 
     override val root = vbox {
@@ -106,6 +105,7 @@ class LeagueView : View("League View") {
             button("View Results").setOnAction {
                 val games = games(model.games.value.map(GameItem::toData))
                 find<ResultsView>(mapOf(
+                        "trialPeriod" to model.item.trialPeriod,
                         "leagueResultItem" to results(
                                 leagueItem = model.item,
                                 leagueState = calculateNewLeague(
