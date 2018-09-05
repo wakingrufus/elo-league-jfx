@@ -31,9 +31,6 @@ class LeagueListView : View("League List") {
                             controller.leagues.remove(model.item)
                         }
                     }
-                    button(text = "Save All").setOnAction {
-                        controller.save()
-                    }
                 }
             }
 }
