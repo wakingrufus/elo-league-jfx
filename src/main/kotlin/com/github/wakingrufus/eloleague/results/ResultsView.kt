@@ -1,11 +1,14 @@
 package com.github.wakingrufus.eloleague.results
 
 import javafx.beans.binding.Bindings
+import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.stage.StageStyle
 import mu.KLogging
 import tornadofx.*
+import java.math.BigDecimal
+import java.math.MathContext
 
 class ResultsView : Fragment() {
     companion object : KLogging()
@@ -26,6 +29,17 @@ class ResultsView : Fragment() {
                 id = "results-tableview"
                 column("Name", PlayerResultItem::nameProperty)
                 column("Rating", PlayerResultItem::currentRatingProperty)
+                column<PlayerResultItem, String>("Win %") {
+                    if (it.value.gamesPlayedProperty.value > 0) {
+                        ReadOnlyStringWrapper((BigDecimal(it.value.winsProperty.value)
+                                .divide(BigDecimal(it.value.gamesPlayedProperty.value), MathContext.DECIMAL32))
+                                .movePointRight(2)
+                                .toString())
+                    } else {
+                        ReadOnlyStringWrapper("N/A")
+                    }
+
+                }
                 column("Games", PlayerResultItem::gamesPlayedProperty)
                 column("Wins", PlayerResultItem::winsProperty)
                 column("Losses", PlayerResultItem::lossesProperty)
@@ -64,6 +78,16 @@ class ResultsView : Fragment() {
                     id = "filter-newbies-button"
                     setOnAction {
                         playerList.predicate = { it.gamesPlayedProperty >= trialPeriod }
+                    }
+                }
+                button("Most Improved") {
+                    action {
+                        find<MostImprovedView>(mapOf("leagueResultItem" to leagueResultItem)).apply {
+                            openModal(
+                                    stageStyle = StageStyle.UTILITY,
+                                    block = true
+                            )
+                        }
                     }
                 }
             }
