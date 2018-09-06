@@ -1,13 +1,14 @@
-package com.github.wakingrufus.eloleague.data
+package com.github.wakingrufus.eloleague.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.github.wakingrufus.eloleague.data.ConfigData
 import mu.KLogging
 import java.io.File
 import java.io.IOException
 
-class FileDataHandler(val file: File = File(File(System.getProperty("user.home")), ".elo.json"))
+class JacksonFileDataHandler(val file: File = File(File(System.getProperty("user.home")), ".elo.json"))
     : DataHandler {
     companion object : KLogging() {
         val objectMapper = ObjectMapper()

@@ -1,7 +1,7 @@
 package com.github.wakingrufus.eloleague
 
 import com.github.wakingrufus.eloleague.data.ConfigData
-import com.github.wakingrufus.eloleague.data.DataHandler
+import com.github.wakingrufus.eloleague.dao.DataHandler
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import javafx.stage.Stage
