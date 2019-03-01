@@ -9,7 +9,6 @@ class PlayerListView : Fragment("Player View") {
     val name: String by param()
 
     override val root = vbox {
-        //  form {
         label(name)
         children.bind(players) { player ->
             hbox {
@@ -21,8 +20,5 @@ class PlayerListView : Fragment("Player View") {
                 }
             }
         }
-
-        //   }
-
     }
 }

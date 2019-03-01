@@ -10,14 +10,16 @@ class PlayerChooserView : Fragment() {
     val players: ObservableList<PlayerItem> by param()
     var choice: PlayerItem? = null
 
-    override val root = vbox {
-        id = "player-choices"
-        children.bind(players.sorted(Comparator.comparing(PlayerItem::name))) {
-            button(it.name) {
-                id = "account-choice-" + it.name
-                action {
-                    choice = it
-                    close()
+    override val root = scrollpane {
+        vbox {
+            id = "player-choices"
+            children.bind(players.sorted(Comparator.comparing(PlayerItem::name))) {
+                button(it.name) {
+                    id = "account-choice-" + it.name
+                    action {
+                        choice = it
+                        close()
+                    }
                 }
             }
         }

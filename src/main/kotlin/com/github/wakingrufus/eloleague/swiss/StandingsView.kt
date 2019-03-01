@@ -17,12 +17,12 @@ class StandingsView : Fragment() {
 
             tableview(ReadOnlyListWrapper(standings.observable())) {
                 column<SwissStanding, String>("Name", { it.value.team.nameProperty })
-                column("Points", SwissStanding::matchPoints)
-                column("Opponent Match win %", SwissStanding::opponentMatchWinPct)
+                readonlyColumn("Points", SwissStanding::matchPoints)
+                readonlyColumn("Opponent Match win %", SwissStanding::opponentMatchWinPct)
                 column<SwissStanding, Number>("Game win %") {
                     ReadOnlyDoubleWrapper(gameWinPct(it.value))
                 }
-                column("Opponent Game win %", SwissStanding::opponentGameWinPct)
+                readonlyColumn("Opponent Game win %", SwissStanding::opponentGameWinPct)
                 columnResizePolicy = SmartResize.POLICY
             }
 
