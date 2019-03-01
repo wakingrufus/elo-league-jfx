@@ -26,9 +26,7 @@ class LeagueView : View("League View") {
     val tournamentModel: SwissTournamentModel by inject()
 
     override val root = vbox {
-        visibleWhen {
-            model.empty.not()
-        }
+        hiddenWhen { model.empty }
         form {
             hbox {
                 this += LeagueSettingsView::class
